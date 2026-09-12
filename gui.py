@@ -3,20 +3,45 @@ import tkinter as tk
 window = tk.Tk()
 
 window.title("Tic-Tac-Toe")
-window.geometry("500x500")
+window.geometry("600x650")
+window.configure(bg="#1e1e2e")
 
 current_player = "X"
 game_over = False
+
+title_label = tk.Label(
+    window,
+    text="Tic-Tac-Toe",
+    font=("Arial", 28, "bold"),
+    fg="white",
+    bg="#1e1e2e"
+)
+
+title_label.grid(row=0, column=0, columnspan=3, pady=5)
+
+
+turn_label = tk.Label(
+    window,
+    text="X's turn",
+    font=("Arial", 16, "bold"),
+    fg="#89b4fa",
+    bg="#1e1e2e"
+)
+
+turn_label.grid(row=1, column=0, columnspan=3)
+
 
 winner_label = tk.Label(
     window,
     text="",
     font=("Arial", 20, "bold"),
+    fg="white",
+    bg="#1e1e2e",
     padx=10,
     pady=5
 )
 
-winner_label.grid(row=3, column=0, columnspan=3)
+winner_label.grid(row=5, column=0, columnspan=3)
 
 
 def check_winner():
@@ -81,6 +106,7 @@ def restart_game():
         button["bg"] = original_button_color
 
     winner_label["text"] = ""
+    turn_label["text"] = "X's turn"
 
 
 def button_click(button):
@@ -93,9 +119,9 @@ def button_click(button):
         button["text"] = current_player
 
         if current_player == "X":
-            button["fg"] = "blue"
+            button["fg"] = "#89b4fa"
         else:
-            button["fg"] = "red"
+            button["fg"] = "#f38ba8"
 
         winning_buttons = check_winner()
 
@@ -103,21 +129,23 @@ def button_click(button):
             winner_label["text"] = f"{current_player} wins!"
 
             if current_player == "X":
-                winner_label["fg"] = "blue"
-                winning_color = "lightblue"
+                winner_label["fg"] = "#89b4fa"
+                winning_color = "#45475a"
             else:
-                winner_label["fg"] = "red"
-                winning_color = "lightcoral"
+                winner_label["fg"] = "#f38ba8"
+                winning_color = "#45475a"
 
             for index in winning_buttons:
                 buttons[index]["bg"] = winning_color
 
+            turn_label["text"] = ""
             game_over = True
             return
 
         if check_draw():
             winner_label["text"] = "Draw!"
-            winner_label["fg"] = "black"
+            winner_label["fg"] = "white"
+            turn_label["text"] = ""
             game_over = True
             return
 
@@ -126,8 +154,10 @@ def button_click(button):
         else:
             current_player = "X"
 
+        turn_label["text"] = f"{current_player}'s turn"
 
-for row in range(5):
+
+for row in range(7):
     window.grid_rowconfigure(row, weight=1)
 
 for column in range(3):
@@ -137,14 +167,18 @@ for column in range(3):
 buttons = []
 original_button_color = None
 
+
 for row in range(3):
     for column in range(3):
         button = tk.Button(
             window,
             text="",
             font=("Arial", 40, "bold"),
-            relief="raised",
-            borderwidth=3
+            relief="flat",
+            borderwidth=0,
+            bg="#313244",
+            fg="white",
+            activebackground="#45475a"
         )
 
         if original_button_color is None:
@@ -154,7 +188,7 @@ for row in range(3):
 
         button.config(command=lambda b=button: button_click(b))
 
-        button.grid(row=row, column=column, sticky="nsew")
+        button.grid(row=row + 2, column=column, sticky="nsew")
 
 
 restart_button = tk.Button(
@@ -167,6 +201,8 @@ restart_button = tk.Button(
     pady=5,
     command=restart_game
 )
-restart_button.grid(row=4, column=0, columnspan=3)
+
+restart_button.grid(row=6, column=0, columnspan=3)
+
 
 window.mainloop()
